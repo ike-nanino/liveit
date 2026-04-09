@@ -4,6 +4,7 @@ import { faPlus, faCreditCard, faArrowUp, faArrowDown, faBell, faChartLine } fro
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import Image from 'next/image'
+import { SignOutButton } from '@/components/SignoutButton'
 
 config.autoAddCss = false
 
@@ -56,8 +57,9 @@ function Dashboard(props: VirtualCardProps) {
           </div>
           <div className="flex items-center gap-4">
             <button className="p-2 bg-white rounded-full shadow-sm relative">
-              <FontAwesomeIcon icon={faBell} className="text-gray-600" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+              {/* <FontAwesomeIcon icon={faBell} className="text-gray-600" /> */}
+              <SignOutButton />
+              {/* <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span> */}
             </button>
             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
               PE
