@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  
+  allowedDevOrigins: [process.env.Origin ],
 };
 
 export default nextConfig;
