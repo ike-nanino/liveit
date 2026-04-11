@@ -1,560 +1,460 @@
+// app/(root)/virtual-card/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  CreditCard,
-  Eye,
-  EyeOff,
-  Plus,
-  Settings,
-  Shield,
-  Smartphone,
+  Shield, Settings, Eye, EyeOff, Plus, Smartphone,
+  CreditCard, Globe, Lock, ChevronRight, X, Check,
+  AlertTriangle, Bell, ArrowUpRight,
 } from "lucide-react";
 import Link from "next/link";
 import DynamicDate from "@/components/DynamicDate";
 import VirtualCreditCard from "@/components/VirtualCreditCard";
+import { toast } from "sonner";
 
-// Sample data for the accounts
-const accountsData = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+interface CardData {
+  id: string;
+  cardType: "visa" | "mastercard";
+  cardHolder: string;
+  lastFour: string;
+  fullNumber: string;
+  expiry: string;
+  cvv: string;
+  limit: number;
+  available: number;
+  bgGradient: string;
+  pin: string;
+  name: string;
+  settings: {
+    contactless: boolean;
+    international: boolean;
+    onlinePurchases: boolean;
+    atmWithdrawals: boolean;
+  };
+  transactions: {
+    id: number;
+    date: string;
+    description: string;
+    amount: number;
+    category: string;
+  }[];
+}
+
+const initialCards: CardData[] = [
   {
     id: "1",
-    name: "Primary Checking",
-    balance: 7297596,
-    accountNumber: "**** **** 4567",
+    name: "Platinum Rewards Visa",
+    cardType: "visa",
+    cardHolder: "JOE ALISON",
+    lastFour: "6420",
+    fullNumber: "4532 1748 3291 6420",
+    expiry: "10/25",
+    cvv: "357",
+    limit: 10000,
+    available: 8500,
+    bgGradient: "bg-gradient-to-br from-purple-600 to-indigo-500",
+    pin: "1234",
+    settings: {
+      contactless: true,
+      international: false,
+      onlinePurchases: true,
+      atmWithdrawals: true,
+    },
     transactions: [
-      {
-        id: 1,
-        date: "Mar 10",
-        description: "Grocery Store",
-        amount: -78.65,
-        category: "Shopping",
-      },
-      {
-        id: 2,
-        date: "Mar 08",
-        description: "Salary Deposit",
-        amount: 3200.0,
-        category: "Income",
-      },
-      {
-        id: 3,
-        date: "Mar 01",
-        description: "Rent Payment",
-        amount: -8500.0,
-        category: "Housing",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Savings Account",
-    balance: 1670404,
-    accountNumber: "**** **** 7890",
-    transactions: [
-      {
-        id: 1,
-        date: "Mar 01",
-        description: "Transfer from Checking",
-        amount: 1019500.0,
-        category: "Transfer",
-      },
-      {
-        id: 2,
-        date: "Feb 15",
-        description: "Interest Payment",
-        amount: 212.88,
-        category: "Income",
-      },
-    ],
-  },
-];
-
-// Sample data for cards
-const cardsData = [
-  {
-    id: "1",
-    name: "Platinum Rewards",
-    type: "Visa",
-    number: "**** **** **** 1234",
-    expiryDate: "05/28",
-    availableCredit: 8500,
-    creditLimit: 10000,
-    cardColor: "bg-gradient-to-r from-blue-700 to-blue-900",
-    transactions: [
-      {
-        id: 1,
-        date: "Mar 11",
-        description: "Restaurant",
-        amount: 84.2,
-        category: "Dining",
-      },
-      {
-        id: 2,
-        date: "Mar 09",
-        description: "Online Shopping",
-        amount: 129.99,
-        category: "Shopping",
-      },
-      {
-        id: 3,
-        date: "Mar 05",
-        description: "Gas Station",
-        amount: 45.75,
-        category: "Transportation",
-      },
+      { id: 1, date: "Apr 20", description: "Restaurant",      amount: 84.20,  category: "Dining"          },
+      { id: 2, date: "Apr 18", description: "Online Shopping", amount: 129.99, category: "Shopping"         },
+      { id: 3, date: "Apr 15", description: "Gas Station",     amount: 45.75,  category: "Transportation"   },
+      { id: 4, date: "Apr 12", description: "Netflix",         amount: 15.99,  category: "Entertainment"    },
     ],
   },
   {
     id: "2",
     name: "Cash Back Mastercard",
-    type: "Mastercard",
-    number: "**** **** **** 5678",
-    expiryDate: "12/26",
-    availableCredit: 2800,
-    creditLimit: 5000,
-    cardColor: "bg-gradient-to-r from-purple-700 to-purple-900",
+    cardType: "mastercard",
+    cardHolder: "JOHN DOE",
+    lastFour: "1122",
+    fullNumber: "5412 7534 9821 1122",
+    expiry: "09/27",
+    cvv: "842",
+    limit: 7000,
+    available: 2500,
+    bgGradient: "bg-gradient-to-br from-yellow-500 to-red-500",
+    pin: "5678",
+    settings: {
+      contactless: true,
+      international: true,
+      onlinePurchases: true,
+      atmWithdrawals: false,
+    },
     transactions: [
-      {
-        id: 1,
-        date: "Mar 08",
-        description: "Grocery Store",
-        amount: 152.37,
-        category: "Shopping",
-      },
-      {
-        id: 2,
-        date: "Mar 03",
-        description: "Streaming Service",
-        amount: 14.99,
-        category: "Entertainment",
-      },
+      { id: 1, date: "Apr 19", description: "Grocery Store",      amount: 152.37, category: "Shopping"      },
+      { id: 2, date: "Apr 16", description: "Streaming Service",  amount: 14.99,  category: "Entertainment" },
+      { id: 3, date: "Apr 10", description: "Pharmacy",           amount: 38.50,  category: "Health"        },
     ],
   },
 ];
 
-const VirtualCard = () => {
-  const [selectedAccount, setSelectedAccount] = useState(accountsData[0]);
-  const [selectedCard, setSelectedCard] = useState(cardsData[0]);
-  const [hideBalances, setHideBalances] = useState(false);
+// ─── Setting toggle row ───────────────────────────────────────────────────────
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
+function SettingRow({
+  icon, label, sublabel, enabled, onToggle, dangerous,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  sublabel: string;
+  enabled: boolean;
+  onToggle: () => void;
+  dangerous?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+      <div className="flex items-center gap-3">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${enabled ? "bg-blue-50 text-blue-600" : "bg-slate-100 text-slate-400"}`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-sm font-medium text-slate-800">{label}</p>
+          <p className="text-xs text-slate-400">{sublabel}</p>
+        </div>
+      </div>
+      <button
+        onClick={onToggle}
+        className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${enabled ? (dangerous ? "bg-red-500" : "bg-blue-500") : "bg-slate-200"}`}
+      >
+        <motion.div
+          animate={{ x: enabled ? 20 : 2 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="absolute top-1 w-4 h-4 bg-white rounded-full shadow"
+        />
+      </button>
+    </div>
+  );
+}
 
-  const handleFreezeAlert = () => {
-    alert("Temporal Hold On Account By CRA Due To Unpaid Taxes Withheld.");
+// ─── Spend limit modal ────────────────────────────────────────────────────────
+
+function SpendLimitModal({ card, onClose }: { card: CardData; onClose: () => void }) {
+  const [daily,   setDaily]   = useState("500");
+  const [monthly, setMonthly] = useState("3000");
+  const [saved,   setSaved]   = useState(false);
+
+  const save = () => {
+    setSaved(true);
+    toast.success("Spend limits updated");
+    setTimeout(onClose, 1000);
   };
 
   return (
-    <div className="min-h-screen p-4 lg:p-8 mt-20 md:mt-0">
-      <div className="max-w-6xl mx-auto">
-        {" "}
-        {/* Increased max-width */}
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Virtual Cards</h1>
-            <DynamicDate />
-          </div>
-          <div className="flex space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-              onClick={handleFreezeAlert}
-            >
-              <Shield className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-              onClick={handleFreezeAlert}
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+          <p className="font-semibold text-slate-800">Spend limits — {card.name}</p>
+          <button onClick={onClose}><X className="w-4 h-4 text-slate-400" /></button>
         </div>
-        {/* Quick Actions */}
-        <div className="flex justify-between mb-6">
-          <Button
-            variant="outline"
-            className="flex flex-col items-center justify-center h-16 w-24 space-y-1 cursor-pointer"
-            onClick={() => setHideBalances(!hideBalances)}
-          >
-            {hideBalances ? (
-              <Eye className="h-5 w-5" />
-            ) : (
-              <EyeOff className="h-5 w-5" />
-            )}
-            <span className="text-xs">{hideBalances ? "Show" : "Hide"}</span>
-          </Button>
-
-          <Link href="/transfer" className="cursor-pointer">
-            <Button className="flex flex-col items-center justify-center h-16 w-24 space-y-1 cursor-pointer">
-              <Plus className="h-5 w-5" />
-              <span className="text-xs">Transfer</span>
-            </Button>
-          </Link>
-        </div>
-        {/* Main Tabs: Accounts and Cards */}
-        <Tabs defaultValue="accounts" className="mb-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="accounts">Accounts</TabsTrigger>
-            <TabsTrigger value="cards">Cards</TabsTrigger>
-          </TabsList>
-
-          {/* Accounts Tab Content */}
-          <TabsContent value="accounts" className="space-y-4">
-            {/* Account Selection */}
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold">My Accounts</h2>
-                <p className="text-sm text-slate-500">
-                  {accountsData.length} accounts
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" className="flex items-center">
-                <span>All Accounts</span>
-              </Button>
+        <div className="px-5 py-4 space-y-4">
+          {[
+            { label: "Daily limit ($)",   value: daily,   set: setDaily   },
+            { label: "Monthly limit ($)", value: monthly, set: setMonthly },
+          ].map(f => (
+            <div key={f.label}>
+              <label className="text-xs text-slate-500 block mb-1">{f.label}</label>
+              <input
+                type="text"
+                value={f.value}
+                onChange={e => f.set(e.target.value.replace(/[^0-9]/g, ""))}
+                style={{ fontSize: "16px" }}
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
             </div>
+          ))}
+          <button
+            onClick={save}
+            className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-all flex items-center justify-center gap-2"
+          >
+            {saved ? <><Check className="w-4 h-4" /> Saved</> : "Save limits"}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
-            {/* Account Cards Grid */}
-            <div className="grid gap-4 lg:grid-cols-2">
-              {accountsData.map((account) => (
-                <Card
-                  key={account.id}
-                  className={`cursor-pointer ${selectedAccount.id === account.id ? "ring-2 ring-blue-600" : ""}`}
-                  onClick={() => setSelectedAccount(account)}
+// ─── Report card modal ────────────────────────────────────────────────────────
+
+function ReportModal({ card, onClose }: { card: CardData; onClose: () => void }) {
+  const [reason,    setReason]    = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const reasons = ["Card lost", "Card stolen", "Suspicious transaction", "Card damaged", "Never received"];
+
+  const submit = () => {
+    if (!reason) return;
+    setSubmitted(true);
+    toast.error("Card reported", { description: "Your card has been blocked. A replacement will arrive in 3–5 business days." });
+    setTimeout(onClose, 1500);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="bg-red-500 px-5 py-4 text-white flex justify-between items-center">
+          <div>
+            <p className="font-semibold">Report this card</p>
+            <p className="text-xs opacity-80 mt-0.5">Card will be blocked immediately</p>
+          </div>
+          <button onClick={onClose}><X className="w-5 h-5 opacity-70" /></button>
+        </div>
+        {submitted ? (
+          <div className="py-10 flex flex-col items-center gap-3">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <Check className="w-6 h-6 text-red-500" />
+            </div>
+            <p className="text-sm font-medium text-slate-700">Card reported & blocked</p>
+          </div>
+        ) : (
+          <div className="px-5 py-4 space-y-3">
+            <p className="text-xs text-slate-500">Select a reason</p>
+            <div className="space-y-2">
+              {reasons.map(r => (
+                <button
+                  key={r}
+                  onClick={() => setReason(r)}
+                  className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all ${reason === r ? "border-red-400 bg-red-50 text-red-700 font-medium" : "border-slate-200 hover:bg-slate-50 text-slate-700"}`}
                 >
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{account.name}</CardTitle>
-                    <CardDescription>{account.accountNumber}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="text-sm text-slate-500">
-                          Available Balance
-                        </p>
-                        <p className="text-2xl font-bold">
-                          {hideBalances
-                            ? "••••••"
-                            : formatCurrency(account.balance)}
-                        </p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleFreezeAlert}
-                      >
-                        Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                  {r}
+                </button>
               ))}
             </div>
-
-            {/* Add Account Button */}
-            <Button
-              variant="outline"
-              className="w-full flex items-center justify-center py-6"
-              onClick={handleFreezeAlert}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              <span>Add New Account</span>
-            </Button>
-
-            {/* Selected Account Details */}
-            {selectedAccount && (
-              <>
-                <h2 className="text-lg font-semibold mt-6 mb-3">
-                  Recent Transactions
-                </h2>
-                <Card>
-                  <CardContent className="pt-6">
-                    {selectedAccount.transactions.map((transaction) => (
-                      <div
-                        key={transaction.id}
-                        className="flex justify-between items-center py-3 border-b border-slate-100 last:border-0"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {transaction.description}
-                          </p>
-                          <p className="text-sm text-slate-500">
-                            {transaction.date} • {transaction.category}
-                          </p>
-                        </div>
-                        <p
-                          className={`font-medium ${transaction.amount < 0 ? "text-red-600" : "text-green-600"}`}
-                        >
-                          {formatCurrency(transaction.amount)}
-                        </p>
-                      </div>
-                    ))}
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="ghost" className="w-full">
-                      <Link href="transactions-history">
-                        See All Transactions
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </>
-            )}
-          </TabsContent>
-
-          {/* Cards Tab Content */}
-          <TabsContent value="cards" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold">My Cards</h2>
-                <p className="text-sm text-slate-500">
-                  {cardsData.length} active cards
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center"
-                onClick={handleFreezeAlert}
-              >
-                <span>Manage</span>
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </Button>
+            <div className="flex gap-2 pt-1">
+              <button onClick={onClose} className="flex-1 h-10 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-all">Cancel</button>
+              <button onClick={submit} disabled={!reason} className="flex-1 h-10 rounded-xl bg-red-500 hover:bg-red-600 disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-medium transition-all">
+                Report card
+              </button>
             </div>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
 
-            {/* Credit Cards Grid */}
-            <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-              {/* {cardsData.map(card => (
-                <div
-                  key={card.id}
-                  className={`rounded-lg overflow-hidden cursor-pointer ${selectedCard.id === card.id ? 'ring-2 ring-blue-600' : ''}`}
-                  onClick={() => setSelectedCard(card)}
-                >
-                  <div className={`${card.cardColor} p-4 text-white`}>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm opacity-80">{card.name}</p>
-                        <p className="text-lg font-medium mt-3">{card.number}</p>
-                      </div>
-                      <CreditCard className="h-6 w-6 opacity-80" />
-                    </div>
-                    <div className="flex justify-between mt-8 text-sm">
-                      <div>
-                        <p className="opacity-80">Expires</p>
-                        <p>{card.expiryDate}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="opacity-80">Card Type</p>
-                        <p>{card.type}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white p-4 border border-t-0 border-slate-200 rounded-b-lg">
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="text-sm text-slate-500">Available Credit</p>
-                        <p className="text-lg font-semibold">
-                          {hideBalances ? '••••••' : formatCurrency(card.availableCredit)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-slate-500">Credit Limit</p>
-                        <p className="text-lg font-semibold">
-                          {hideBalances ? '••••••' : formatCurrency(card.creditLimit)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))} */}
+// ─── Main page ────────────────────────────────────────────────────────────────
 
-              {/* <div
-                className="relative w-[320px] sm:w-[500px] h-[190px] sm:h-[300px] perspective cursor-pointer"
-  
-              >
-                <div
-                  className=
-                    'relative w-full h-full transition-transform duration-1000'
-                >
-                  
-                  <div className="absolute w-full h-full rounded-xl overflow-hidden bg-gradient-to-tr from-[#0045c7] to-[#ff2c7d] px-4 sm:px-6 py-4 sm:py-6 backface-hidden z-10">
- 
-                    <div className="relative z-10 flex justify-between items-center mb-6">
-                      <Image
-                        src="/images/chip.png"
-                        alt="Chip"
-                        width={50}
-                        height={50}
-                      />
-                      <Image
-                        src="/images/visa.png"
-                        alt="Visa"
-                        width={60}
-                        height={60}
-                      />
-                    </div>
-                    <div className="relative z-10 text-white text-lg sm:text-2xl tracking-widest flex justify-between mb-4">
-                      <p>****</p>
-                      <p>****</p>
-                      <p>****</p>
-                      <p>6420</p>
-                    </div>
-                    <div className="relative z-10 text-xs sm:text-sm text-white flex justify-between mb-1">
-                      <p>CARD HOLDER</p>
-                      <p>VALID TILL</p>
-                    </div>
-                    <div className="relative z-10 text-white text-sm sm:text-lg flex justify-between">
-                      <p>JOE ALISON</p>
-                      <p>10 / 25</p>
-                    </div>
-                  </div>
-        
-                </div>
-              </div> */}
+export default function VirtualCardPage() {
+  const [cards,       setCards]       = useState<CardData[]>(initialCards);
+  const [activeCard,  setActiveCard]  = useState(0);
+  const [hideBalance, setHideBalance] = useState(false);
+  const [modal,       setModal]       = useState<"limit" | "report" | null>(null);
 
-              <VirtualCreditCard
-                cardType="visa"
-                cardHolder="JOE ALISON"
-                lastFour="6420"
-                fullNumber="4532 1748 3291 6420"
-                expiry="10/25"
-                cvv="357"
-                limit={5000}
-                available={3000}
-                bgGradient="bg-gradient-to-br from-purple-600 to-indigo-500"
-                pin="1234"
-              />
+  const card = cards[activeCard];
 
-              <VirtualCreditCard
-                cardType="mastercard"
-                cardHolder="JOHN DOE"
-                lastFour="1122"
-                fullNumber="5412 7534 9821 1122"
-                expiry="09/27"
-                cvv="842"
-                limit={7000}
-                available={2500}
-                bgGradient="bg-gradient-to-br from-yellow-500 to-red-500"
-                pin="5678"
-              />
-            </div>
+  const toggleSetting = (key: keyof CardData["settings"]) => {
+    setCards(prev => prev.map((c, i) => {
+      if (i !== activeCard) return c;
+      const next = { ...c.settings, [key]: !c.settings[key] };
+      toast.success(
+        `${key === "contactless" ? "Contactless payments" : key === "international" ? "International transactions" : key === "onlinePurchases" ? "Online purchases" : "ATM withdrawals"} ${next[key] ? "enabled" : "disabled"}`
+      );
+      return { ...c, settings: next };
+    }));
+  };
 
-            {/* Virtual Card Button */}
-            <Button
-              variant="outline"
-              className="w-full flex items-center justify-center py-6"
-              onClick={handleFreezeAlert}
+  const usedCredit = card.limit - card.available;
+  const usagePct   = Math.round((usedCredit / card.limit) * 100);
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 lg:p-8 mt-16 md:mt-0">
+      <AnimatePresence>
+        {modal === "limit"  && <SpendLimitModal card={card} onClose={() => setModal(null)} />}
+        {modal === "report" && <ReportModal     card={card} onClose={() => setModal(null)} />}
+      </AnimatePresence>
+
+      <div className="max-w-2xl mx-auto space-y-5">
+
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">My Cards</h1>
+            <DynamicDate />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setHideBalance(v => !v)}
+              className="w-9 h-9 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors"
             >
-              <Plus className="mr-2 h-4 w-4" />
-              <span>Add Virtual Card</span>
-            </Button>
+              {hideBalance ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            </button>
+            <Link href="/notifications" className="w-9 h-9 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors">
+              <Bell className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
 
-            {/* Selected Card Transactions */}
-            {selectedCard && (
-              <>
-                <h2 className="text-lg font-semibold mt-6 mb-3">
-                  Recent Card Transactions
-                </h2>
-                <Card>
-                  <CardContent className="pt-6">
-                    {selectedCard.transactions.map((transaction) => (
-                      <div
-                        key={transaction.id}
-                        className="flex justify-between items-center py-3 border-b border-slate-100 last:border-0"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {transaction.description}
-                          </p>
-                          <p className="text-sm text-slate-500">
-                            {transaction.date} • {transaction.category}
-                          </p>
-                        </div>
-                        <p className="font-medium text-red-600">
-                          -{formatCurrency(transaction.amount)}
-                        </p>
-                      </div>
-                    ))}
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="ghost" className="w-full">
-                      See All Transactions
-                    </Button>
-                  </CardFooter>
-                </Card>
+        {/* Card selector tabs */}
+        <div className="flex gap-2">
+          {cards.map((c, i) => (
+            <button
+              key={c.id}
+              onClick={() => setActiveCard(i)}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium border transition-all ${activeCard === i ? "bg-white border-blue-300 text-blue-700 shadow-sm" : "bg-transparent border-slate-200 text-slate-500 hover:bg-white"}`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
 
-                {/* Card Settings */}
-                <h2 className="text-lg font-semibold mt-6 mb-3">
-                  Card Settings
-                </h2>
-                <Card>
-                  <CardContent className="py-4">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center">
-                          <Smartphone className="h-5 w-5 mr-3 text-slate-500" />
-                          <span>Contactless Payments</span>
-                        </div>
-                        <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          Enabled
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center">
-                          <Shield className="h-5 w-5 mr-3 text-slate-500" />
-                          <span>International Transactions</span>
-                        </div>
-                        <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          Disabled
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center">
-                          <CreditCard className="h-5 w-5 mr-3 text-slate-500" />
-                          <span>Online Purchases</span>
-                        </div>
-                        <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          Enabled
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button
-                      variant="ghost"
-                      className="w-full"
-                      onClick={handleFreezeAlert}
-                    >
-                      Manage Card Settings
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </>
-            )}
-          </TabsContent>
-        </Tabs>
+        {/* The card itself */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={card.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25 }}
+          >
+            <VirtualCreditCard
+              cardType={card.cardType}
+              cardHolder={card.cardHolder}
+              lastFour={card.lastFour}
+              fullNumber={card.fullNumber}
+              expiry={card.expiry}
+              cvv={card.cvv}
+              limit={card.limit}
+              available={card.available}
+              bgGradient={card.bgGradient}
+              pin={card.pin}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Credit usage */}
+        <div className="bg-white rounded-2xl border border-slate-200 px-5 py-4 space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-500">Credit used</span>
+            <span className="font-medium text-slate-800">
+              {hideBalance ? "••••" : `$${usedCredit.toLocaleString()}`} of {hideBalance ? "••••" : `$${card.limit.toLocaleString()}`}
+            </span>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <motion.div
+              className={`h-full rounded-full ${usagePct > 80 ? "bg-red-500" : usagePct > 50 ? "bg-amber-400" : "bg-blue-500"}`}
+              initial={{ width: 0 }}
+              animate={{ width: `${usagePct}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-slate-400">
+            <span>Available: <span className="text-slate-700 font-medium">{hideBalance ? "••••" : `$${card.available.toLocaleString()}`}</span></span>
+            <span className={usagePct > 80 ? "text-red-500 font-medium" : usagePct > 50 ? "text-amber-500" : "text-blue-500"}>{usagePct}% used</span>
+          </div>
+        </div>
+
+        {/* Quick card actions */}
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: "Spend limits",    icon: <Shield    className="w-4 h-4" />, action: () => setModal("limit"),  color: "text-blue-600   bg-blue-50   hover:bg-blue-100"   },
+            { label: "Report card",     icon: <AlertTriangle className="w-4 h-4" />, action: () => setModal("report"), color: "text-red-600    bg-red-50    hover:bg-red-100"    },
+            { label: "Pay balance",     icon: <ArrowUpRight  className="w-4 h-4" />, action: () => toast.info("Redirecting to payment…"), color: "text-green-600  bg-green-50  hover:bg-green-100"  },
+          ].map(btn => (
+            <button
+              key={btn.label}
+              onClick={btn.action}
+              className={`flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-medium transition-all ${btn.color}`}
+            >
+              {btn.icon}
+              {btn.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Card settings */}
+        <div className="bg-white rounded-2xl border border-slate-200 px-5 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Settings className="w-4 h-4 text-slate-400" />
+            <p className="text-sm font-semibold text-slate-800">Card settings</p>
+          </div>
+          <SettingRow
+            icon={<Smartphone className="w-4 h-4" />}
+            label="Contactless payments"
+            sublabel="Tap to pay at terminals"
+            enabled={card.settings.contactless}
+            onToggle={() => toggleSetting("contactless")}
+          />
+          <SettingRow
+            icon={<Globe className="w-4 h-4" />}
+            label="International transactions"
+            sublabel="Use card outside home country"
+            enabled={card.settings.international}
+            onToggle={() => toggleSetting("international")}
+            dangerous
+          />
+          <SettingRow
+            icon={<CreditCard className="w-4 h-4" />}
+            label="Online purchases"
+            sublabel="E-commerce and subscriptions"
+            enabled={card.settings.onlinePurchases}
+            onToggle={() => toggleSetting("onlinePurchases")}
+          />
+          <SettingRow
+            icon={<Lock className="w-4 h-4" />}
+            label="ATM withdrawals"
+            sublabel="Cash advances at ATMs"
+            enabled={card.settings.atmWithdrawals}
+            onToggle={() => toggleSetting("atmWithdrawals")}
+          />
+        </div>
+
+        {/* Recent transactions for this card */}
+        <div className="bg-white rounded-2xl border border-slate-200 px-5 py-4">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-sm font-semibold text-slate-800">Recent transactions</p>
+            <Link href="/transactions-history" className="text-xs text-blue-500 font-medium hover:underline flex items-center gap-0.5">
+              See all <ChevronRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="space-y-0">
+            {card.transactions.map((tx, i) => (
+              <motion.div
+                key={tx.id}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.06 }}
+                className="flex justify-between items-center py-3 border-b border-slate-100 last:border-0"
+              >
+                <div>
+                  <p className="text-sm font-medium text-slate-800">{tx.description}</p>
+                  <p className="text-xs text-slate-400">{tx.date} · {tx.category}</p>
+                </div>
+                <p className="text-sm font-semibold text-red-500">-${tx.amount.toFixed(2)}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Add new card */}
+        <button
+          onClick={() => toast.info("New card application", { description: "Redirecting to card application form…" })}
+          className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center gap-2 text-sm text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50 transition-all"
+        >
+          <Plus className="w-4 h-4" />
+          Apply for a new card
+        </button>
       </div>
     </div>
   );
-};
-
-export default VirtualCard;
+}

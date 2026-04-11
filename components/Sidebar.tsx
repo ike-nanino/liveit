@@ -21,6 +21,7 @@ import { sidebarLinks } from "@/constant";
 
 const iconMap: Record<string, React.ReactNode> = {
   Dashboard: <Home size={18} />,
+  Accounts: <Home size={18} />,
   "Online Deposit": <Download size={18} />,
   "Domestic Transfer": <SendHorizontal size={18} />,
   "Wire Transfer": <Wifi size={18} />,
@@ -50,7 +51,7 @@ function Sidebar() {
         </Link> */}
 
         {/* User Info */}
-        <div className="flex flex-col items-center gap-1 mb-10">
+        <div className="flex flex-col items-center gap-1 mb-8">
           <div className="size-20 rounded-full bg-gray-200 overflow-hidden">
             <Image
               src="/images/profile.jpg"
@@ -61,7 +62,6 @@ function Sidebar() {
             />
           </div>
           <p className="text-sm font-semibold">Princess Evenly</p>
-          <span className="text-xs text-gray-400">Savings</span>
         </div>
 
         {/* Sidebar Links */}

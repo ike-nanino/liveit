@@ -213,7 +213,7 @@ export default function VirtualCreditCard({
         />
       )}
 
-      <div className="space-y-3 w-full">
+      <div className="space-y-3 w-full max-w-sm mx-auto">
 
         {/* ── Card visual ── */}
         <div

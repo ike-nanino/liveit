@@ -4,6 +4,10 @@ export const sidebarLinks = [
       label: "Dashboard",
     },
     {
+      route: "/accounts",
+      label: "Accounts",
+    },
+    {
       route: "/online-deposit",
       label: "Online Deposit",
     },
