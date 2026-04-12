@@ -3,6 +3,7 @@
 import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "sonner";
+import SessionGuard from "@/components/SessionGuard";
 
 export default function RootLayout({
   children,
@@ -10,6 +11,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+
+     <SessionGuard>
     <main className="relative flex h-screen max-h-screen w-full overflow-hidden">
 
       {/* Sidebar */}
@@ -27,5 +30,6 @@ export default function RootLayout({
       </div>
 
     </main>
+    </SessionGuard>
   );
 }
