@@ -1,95 +1,116 @@
+// components/Sidebar.tsx
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-// import Footer from './Footer';
-import {
-  Home,
-  Download,
-  SendHorizontal,
-  Wifi,
-  CreditCard,
-  DollarSign,
-  Settings,
-  Users,
-  Banknote,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 import { sidebarLinks } from "@/constant";
+import { toast } from "sonner";
 
-const iconMap: Record<string, React.ReactNode> = {
-  Dashboard: <Home size={18} />,
-  Accounts: <Home size={18} />,
-  "Online Deposit": <Download size={18} />,
-  "Domestic Transfer": <SendHorizontal size={18} />,
-  "Wire Transfer": <Wifi size={18} />,
-  "Virtual Card": <CreditCard size={18} />,
-  "Loan & Mortgages": <Banknote size={18} />,
-  Transactions: <CreditCard size={18} />,
-  Withdrawal: <DollarSign size={18} />,
-  "Account Manager": <Users size={18} />,
-  Settings: <Settings size={18} />,
-};
+async function signOutUser(router: ReturnType<typeof useRouter>) {
+  await fetch("/api/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "destroy" }),
+  });
+  const { auth } = await import("@/lib/firebase");
+  const { signOut } = await import("firebase/auth");
+  await signOut(auth);
+  router.push("/sign-in");
+}
 
-function Sidebar() {
+export default function Sidebar() {
   const pathname = usePathname();
+  const router   = useRouter();
+
+  const handleSignOut = async () => {
+    toast.promise(signOutUser(router), {
+      loading: "Signing out…",
+      success: "Signed out successfully",
+      error:   "Sign out failed",
+    });
+  };
+
+  // Split links: main nav and bottom (settings)
+  const mainLinks     = sidebarLinks.filter(l => l.label !== "Settings");
+  const bottomLinks   = sidebarLinks.filter(l => l.label === "Settings");
 
   return (
-    <aside className="w-[260px] min-h-screen bg-white shadow-md px-4 py-6 flex flex-col justify-between  max-md:hidden">
-      <div>
-        {/* Logo */}
-        {/* <Link href='/dashboard' className='flex justify-center mb-6'>
-          <Image 
-            src='/assets/images/osbicanada.png'
-            alt='SBILogo'
-            width={100}
-            height={100}
-            className="rounded-full"
+    <aside className="w-[220px] min-h-screen bg-white border-r border-slate-100 px-3 py-5 flex flex-col max-md:hidden">
+
+      {/* User profile */}
+      <div className="flex flex-col items-center gap-2 mb-6 pb-5 border-b border-slate-100">
+        <div className="w-14 h-14 rounded-2xl bg-gray-100 overflow-hidden ring-2 ring-blue-100">
+          <Image
+            src="/images/profile.jpg"
+            alt="User Avatar"
+            width={56}
+            height={56}
+            className="object-cover w-full h-full"
           />
-        </Link> */}
-
-        {/* User Info */}
-        <div className="flex flex-col items-center gap-1 mb-8">
-          <div className="size-20 rounded-full bg-gray-200 overflow-hidden">
-            <Image
-              src="/images/profile.jpg"
-              alt="User Avatar"
-              width={80}
-              height={80}
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <p className="text-sm font-semibold">Princess Evenly</p>
         </div>
+        <div className="text-center">
+          <p className="text-sm font-semibold text-slate-800">Princess Evenly</p>
+          <span className="text-[11px] text-slate-400">Premium Savings</span>
+        </div>
+      </div>
 
-        {/* Sidebar Links */}
-        <nav className="flex flex-col gap-1">
-          {sidebarLinks.map((item) => {
-            const isActive =
-              pathname === item.route || pathname.startsWith(`${item.route}/`);
+      {/* Main nav — scrollable if needed */}
+      <nav className="flex flex-col gap-0.5 flex-1 overflow-y-auto">
+        {mainLinks.map((item) => {
+          const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`);
+          const Icon = item.icon;
 
-            return (
-              <Link
-                href={item.route}
-                key={item.label}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition-all",
-                  isActive
-                    ? "bg-[#304FFE] text-white"
-                    : "text-gray-600 hover:bg-gray-100",
-                )}
-              >
-                {iconMap[item.label]}
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+          return (
+            <Link
+              key={item.route}
+              href={item.route}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium rounded-xl transition-all",
+                isActive
+                  ? "bg-blue-600 text-white shadow-sm shadow-blue-200"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+              )}
+            >
+              <Icon size={16} className="shrink-0" />
+              <span className="truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom: settings + logout */}
+      <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-0.5">
+        {bottomLinks.map((item) => {
+          const isActive = pathname === item.route;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.route}
+              href={item.route}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium rounded-xl transition-all",
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+              )}
+            >
+              <Icon size={16} className="shrink-0" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all w-full text-left"
+        >
+          <LogOut size={16} className="shrink-0" />
+          <span>Sign out</span>
+        </button>
       </div>
     </aside>
   );
 }
-
-export default Sidebar;

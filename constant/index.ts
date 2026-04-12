@@ -1,50 +1,23 @@
+// constant/index.ts
+import {
+  Home, Download, SendHorizontal, Wifi, CreditCard,
+  DollarSign, Settings, Users, Banknote, Landmark,
+  LayoutGrid, ArrowDownUp,
+} from "lucide-react";
+
 export const sidebarLinks = [
-    {
-      route: "/dashboard",
-      label: "Dashboard",
-    },
-    {
-      route: "/accounts",
-      label: "Accounts",
-    },
-    {
-      route: "/online-deposit",
-      label: "Online Deposit",
-    },
-    {
-      route: "/domestic-transfer",
-      label: "Domestic Transfer",
-    },
-    {
-      route: "/wire-transfer",
-      label: "Wire Transfer",
-    },
-    {
-      route: "/virtual-card",
-      label: "Virtual Card",
-    },
-    {
-      route: "/loan-mortgage",
-      label: "Loan & Mortgages",
-    },
-    {
-      route: "/transactions",
-      label: "Transactions",
-    },
-    {
-      route: "/withdrawal",
-      label: "Withdrawal",
-    },
-    {
-      route: "/account-manager",
-      label: "Account Manager",
-    },
-    {
-      route: "/settings",
-      label: "Settings",
-    },
-  ];
-  
+  { route: "/dashboard",         label: "Dashboard",         icon: Home          },
+  { route: "/accounts",          label: "Accounts",          icon: LayoutGrid     },
+  { route: "/online-deposit",    label: "Deposit",           icon: Download       },
+  { route: "/domestic-transfer", label: "Send money",        icon: SendHorizontal },
+  { route: "/wire-transfer",     label: "Wire transfer",     icon: Wifi           },
+  { route: "/virtual-card",      label: "Cards",             icon: CreditCard     },
+  { route: "/loan-mortgage",     label: "Loans",             icon: Banknote       },
+  { route: "/transactions",      label: "Transactions",      icon: ArrowDownUp    },
+  { route: "/withdrawal",        label: "Withdrawal",        icon: DollarSign     },
+  { route: "/account-manager",   label: "Account manager",   icon: Users          },
+  { route: "/settings",          label: "Settings",          icon: Settings       },
+];
  
   
   export const topCategoryStyles = {
