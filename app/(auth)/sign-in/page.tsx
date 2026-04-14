@@ -188,89 +188,80 @@ export default function SignInPage() {
 
   // ── Step 2: verify OTP, then do the real sign-in ──────────────────────────
   // Inside handleOtp in app/(auth)/sign-in/page.tsx
+  
 
-  const handleOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const code = otp.join("");
-    if (code.length < 6) {
-      toast.error("Enter all 6 digits");
-      return;
+ const handleOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const code = otp.join('');
+  if (code.length < 6) {
+    toast.error('Enter all 6 digits');
+    return;
+  }
+  setLoading(true);
+
+  try {
+    // 1. Verify OTP with your API
+    const verifyRes = await fetch('/api/verify-otp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ uid, otp: code }),
+    });
+
+    const verifyData = await verifyRes.json();
+    if (!verifyRes.ok) throw new Error(verifyData.error ?? 'Verification failed');
+
+    // 2. Re-authenticate with Firebase
+    await signInWithEmailAndPassword(auth, email, password);
+
+    // 3. Set the session cookie and WAIT for it to complete
+    const sessionRes = await fetch('/api/session', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ action: 'create' }),
+    });
+
+    if (!sessionRes.ok) {
+      throw new Error('Failed to create session');
     }
-    setLoading(true);
 
-    try {
-      // 1. Verify OTP
-      const res = await fetch("/api/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid, otp: code }),
-      });
+    // 4. Show success state
+    setStage('success');
+    toast.success('Welcome back', { description: 'Redirecting to your dashboard…' });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Verification failed");
+    // 5. Use window.location.href instead of router.push
+    // This does a full page reload which ensures the cookie
+    // is committed before the proxy reads it
+    const params      = new URLSearchParams(window.location.search);
+    const callbackUrl = params.get('callbackUrl') ?? '/dashboard';
 
-      // 2. Do the real Firebase sign-in
-      await signInWithEmailAndPassword(auth, email, password);
+    setTimeout(() => {
+      window.location.href = callbackUrl;
+    }, 1500);
 
-      // 3. Set the session cookie via our API route
-      await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "create" }),
-      });
+  } catch (err: unknown) {
+    const msg = (err as { message?: string })?.message ?? '';
 
-      // 4. Show success then redirect
-      setStage("success");
-      toast.success("Welcome back", {
-        description: "Redirecting to your dashboard…",
-      });
-
-      // 5. Honour callbackUrl if they were trying to visit a specific page
-      const params = new URLSearchParams(window.location.search);
-      const callbackUrl = params.get("callbackUrl") ?? "/dashboard";
-      setTimeout(() => router.push(callbackUrl), 1500);
-    } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message ?? "";
-
-      if (
-        msg.toLowerCase().includes("incorrect") ||
-        msg.toLowerCase().includes("invalid") ||
-        msg.toLowerCase().includes("wrong")
-      ) {
-        toast.error("Incorrect code", {
-          description: "The code you entered is wrong. Please try again.",
-        });
-      } else if (msg.toLowerCase().includes("expired")) {
-        toast.error("Code expired", {
-          description: "Your code has expired. Request a new one.",
-        });
-      } else if (msg.toLowerCase().includes("no otp")) {
-        toast.error("No code found", {
-          description: "Please request a new verification code.",
-        });
-      } else {
-        toast.error("Verification failed", {
-          description: msg || "Something went wrong. Please try again.",
-        });
-      }
-
-      // In handleOtp catch block, add:
-      setOtpError(true);
-      setTimeout(() => setOtpError(false), 600); // reset after shake animation
-
-      // Always clear the boxes on any error
-      setOtp(Array(6).fill(""));
-      // Focus the first box again
-      setTimeout(() => {
-        const first = document.querySelector<HTMLInputElement>(
-          'input[inputmode="numeric"]',
-        );
-        first?.focus();
-      }, 100);
-    } finally {
-      setLoading(false);
+    if (msg.toLowerCase().includes('incorrect') || msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('wrong')) {
+      toast.error('Incorrect code', { description: 'The code you entered is wrong. Please try again.' });
+    } else if (msg.toLowerCase().includes('expired')) {
+      toast.error('Code expired', { description: 'Your code has expired. Request a new one.' });
+    } else if (msg.toLowerCase().includes('failed to create session')) {
+      toast.error('Session error', { description: 'Could not create your session. Please try signing in again.' });
+    } else {
+      toast.error('Verification failed', { description: msg || 'Something went wrong. Please try again.' });
     }
-  };
+
+    setOtpError(true);
+    setTimeout(() => setOtpError(false), 600);
+    setOtp(Array(6).fill(''));
+    setTimeout(() => {
+      const first = document.querySelector<HTMLInputElement>('input[inputmode="numeric"]');
+      first?.focus();
+    }, 100);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // ── Resend OTP ────────────────────────────────────────────────────────────
   const handleResend = async () => {
