@@ -112,10 +112,10 @@ function AccountModal({ account, onClose }: { account: { name: string; balance: 
             ))}
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
-            <Link href="/transactions-history" className="py-2 text-center text-sm bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition-colors">
+            <Link href="/transactions" className="py-2 text-center text-sm bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition-colors">
               All transactions
             </Link>
-            <Link href="/deposit" className="py-2 text-center text-sm bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium transition-colors">
+            <Link href="/online-deposit" className="py-2 text-center text-sm bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium transition-colors">
               Deposit
             </Link>
           </div>
