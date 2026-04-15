@@ -9,7 +9,7 @@ import {
   TrendingUp, Lock, Smartphone, CreditCard,
   PiggyBank, BarChart3, HeadphonesIcon, ChevronDown,
   BadgeCheck, Award, Users, DollarSign,
-  TrendingDown, ArrowLeftRight, Play,
+   Play,
 } from "lucide-react";
 import Navbar from "@/components/marketing/Navbar";
 import Footer from "@/components/marketing/Footer";
@@ -218,10 +218,10 @@ function Features() {
         <FadeIn className="text-center mb-16">
           <SectionLabel>Features</SectionLabel>
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
-            Everything you need.<br />Nothing you don't.
+            Everything you need.<br />Nothing you don&apos;t.
           </h2>
           <p className="text-slate-500 text-lg max-w-xl mx-auto">
-            We built SecureBank to be the only banking app you'll ever need.
+            We built SecureBank to be the only banking app you&apos;ll ever need.
           </p>
         </FadeIn>
 
@@ -556,7 +556,7 @@ function Testimonials() {
                     <Star key={j} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-slate-700 text-sm leading-relaxed mb-5">"{r.text}"</p>
+                <p className="text-slate-700 text-sm leading-relaxed mb-5">&rdquo;{r.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {r.name.charAt(0)}
@@ -671,55 +671,6 @@ function FAQ() {
   );
 }
 
-// ─── CTA banner ───────────────────────────────────────────────────────────────
-
-function CTABanner() {
-  return (
-    <section id="contact" className="py-28 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="relative bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl px-8 py-20 text-center overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.06]" style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-            }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-bold px-4 py-2 rounded-full mb-7 uppercase tracking-widest">
-                <Zap className="w-3.5 h-3.5" />
-                Open in under 5 minutes
-              </div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-5 tracking-tight">
-                Ready to bank better?
-              </h2>
-              <p className="text-slate-400 text-lg max-w-xl mx-auto mb-10">
-                Join over 2 million people who've already made the switch.
-                No paperwork. No branch visit. No hassle.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link
-                  href="/sign-in"
-                  className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:shadow-2xl hover:shadow-blue-500/30 group"
-                >
-                  Open your free account
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                
-                  href="mailto:support@securebank.com"
-                  className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium px-8 py-4 rounded-2xl text-sm transition-all backdrop-blur-sm"
-                >
-                  <HeadphonesIcon className="w-4 h-4" />
-                  Talk to an advisor
-                </a>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  );
-}
 
 // ─── Page assembly ────────────────────────────────────────────────────────────
 
@@ -734,7 +685,6 @@ export default function HomePage() {
       <Testimonials />
       <TrustBar />
       <FAQ />
-      <CTABanner />
       <Footer />
     </main>
   );
