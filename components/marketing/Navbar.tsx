@@ -147,22 +147,14 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
 
             {/* ── Logo ── */}
-            <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              {/* Logo image — replace /images/logo.png with your actual file */}
-              <div className="w-8 h-8 rounded-xl overflow-hidden bg-blue-600 flex items-center justify-center">
-                <Image
-                  src="/images/logo.png"
-                  alt="SecureBank"
-                  width={132}
-                  height={32}
-                  className="object-cover"
-                  onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
-                />
-              </div>
-              <span className={`font-bold text-lg transition-colors ${logoColor}`}>
-                SecureBank
-              </span>
-            </Link>
+            <Image
+                        src="/images/logo.png"
+                        alt=" logo"
+                        width={156}
+                        height={56}
+                        className="rounded-2xl"
+                        priority
+                      />
 
             {/* ── Desktop nav ── */}
             <nav className="hidden lg:flex items-center gap-1">
