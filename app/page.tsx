@@ -135,7 +135,7 @@ function Hero() {
             sizes="100vw"
           />
           {/* Dark overlay — keeps text readable over any photo */}
-          {/* <div className="absolute inset-0 bg-linear-to-b from-slate-900/80 via-slate-900/70 to-slate-900/90" /> */}
+          <div className="absolute inset-0 bg-linear-to-b from-slate-900/20 via-slate-900/10 to-slate-900/30" />
           {/* Subtle blue tint for brand consistency */}
         
         </motion.div>
@@ -184,7 +184,7 @@ function Hero() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
                 transition={{ duration: 0.45 }}
-                className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 inline-block"
+                className="text-transparent bg-clip-text bg-linear-to-b from-blue-400 to-cyan-300 inline-block"
               >
                 {slide.word}
               </motion.span>
