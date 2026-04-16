@@ -315,32 +315,32 @@ export default function SignInPage() {
           <Image
             src="/images/logo.png"
             alt="SecureBank logo"
-            width={56}
-            height={56}
+            width={356}
+            height={96}
             className="rounded-2xl"
             priority
           />
-          <div className="text-center">
+          {/* <div className="text-center">
             <h1 className="text-xl font-medium">SecureBank</h1>
             <p className="text-sm text-muted-foreground">
               Secure online banking
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Card */}
         <div className="bg-background border border-border rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-            <span className="text-sm font-medium">
-              {stage === "credentials" && "Sign in to your account"}
+          <div className="px-6 py-4 border-b border-border text-center">
+            <span className="text-sm font-medium text-center">
+              {stage === "credentials" && "Sign In to your account"}
               {stage === "otp" && "Two-factor verification"}
-              {stage === "success" && "Signed in"}
+              {stage === "success" && "Signed In"}
             </span>
-            <span className="flex items-center gap-1 text-[11px] text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
+            {/* <span className="flex items-center gap-1 text-[11px] text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
               <ShieldCheck className="w-3 h-3" />
               Secure
-            </span>
+            </span> */}
           </div>
 
           <AnimatePresence mode="wait">

@@ -153,7 +153,7 @@ export default function Navbar() {
                 <Image
                   src="/images/logo.png"
                   alt="SecureBank"
-                  width={32}
+                  width={132}
                   height={32}
                   className="object-cover"
                   onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
