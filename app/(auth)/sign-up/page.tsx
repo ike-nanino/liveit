@@ -164,7 +164,7 @@ export default function SignUpPage() {
 
     } catch {
       // System is down — show the Sonner error and email was still attempted
-      toast.error("System currently unavailable", {
+      toast.error("System currently Down", {
         description: "We were unable to create your account at this time. Please try again later",
         duration:    10000,
         icon:        <AlertTriangle className="w-4 h-4 text-red-500" />,

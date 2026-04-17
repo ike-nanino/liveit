@@ -8,8 +8,7 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Shield, Zap, Globe, Star, ArrowRight, Check,
   TrendingUp, Lock, Smartphone, CreditCard,
-  PiggyBank, BarChart3, HeadphonesIcon, ChevronDown,
-  BadgeCheck, Award, Users, DollarSign, Play,
+  PiggyBank, BarChart3, HeadphonesIcon, ChevronDown, Award, Users, DollarSign,
 } from "lucide-react";
 import Navbar from "@/components/marketing/Navbar";
 import Footer from "@/components/marketing/Footer";
@@ -540,7 +539,7 @@ function Products() {
               </Link>
             </div>
 
-            <div className={`bg-gradient-to-br ${p.gradient} rounded-3xl p-8 text-white min-h-[300px] flex flex-col justify-between relative overflow-hidden`}>
+            <div className={`bg-linear-to-br ${p.gradient} rounded-3xl p-8 text-white min-h-75 flex flex-col justify-between relative overflow-hidden`}>
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
               <div className="relative z-10">
@@ -645,7 +644,7 @@ function HumanSection() {
           <FadeIn delay={0.15}>
             <SectionLabel>Our people</SectionLabel>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
-              Real humans behind every interaction
+              Talk to Us
             </h2>
             <p className="text-slate-500 text-lg leading-relaxed mb-6">
               We believe banking should feel personal. Behind every feature,
@@ -846,7 +845,7 @@ function Testimonials() {
                 </div>
                 <p className="text-slate-700 text-sm leading-relaxed mb-5">&ldquo;{r.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {r.name.charAt(0)}
                   </div>
                   <div>
@@ -959,70 +958,7 @@ function FAQ() {
   );
 }
 
-// ─── CTA banner with background image ─────────────────────────────────────────
 
-function CTABanner() {
-  return (
-    <section id="contact" className="py-28 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl overflow-hidden">
-            {/*
-              Search Unsplash: "city skyline night lights financial district aerial"
-              Pick: a dramatic aerial shot of a city at night, lights reflecting,
-              financial district towers visible, rich blues and golds
-              Place at: /public/images/cta-bg.jpg
-              Wide landscape format works best here (16:6 ratio)
-            */}
-            <div className="relative h-full">
-              <Image
-                src="/images/nightcta.jpg"
-                alt="Aerial night view of a glittering financial district city skyline with lights reflecting on water"
-                fill
-                className="object-cover object-center"
-              />
-            
-            </div>
-
-            {/* Grid overlay */}
-            {/* <div className="absolute inset-0 opacity-[0.05]" style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-            }} /> */}
-
-            <div className="relative z-10 px-8 py-20 text-center">
-              <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-bold px-4 py-2 rounded-full mb-7 uppercase tracking-widest">
-                <Zap className="w-3.5 h-3.5" />
-                Open in under 5 minutes
-              </div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-5 tracking-tight">
-                Ready to bank better?
-              </h2>
-              <p className="text-slate-400 text-lg max-w-xl mx-auto mb-10">
-                Join over 2 million people who&apos;ve already made the switch.
-                No paperwork. No branch visit. No hassle.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link
-                  href="/sign-up"
-                  className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:shadow-2xl hover:shadow-blue-500/30 group"
-                >
-                  Open an account
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <a
-                  href="mailto:support@valemontcrest.com"
-                  className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/15 text-white font-medium px-8 py-4 rounded-2xl text-sm transition-all backdrop-blur-sm"
-                >
-                  <HeadphonesIcon className="w-4 h-4" />
-                  Talk to an advisor
-                </a>
-              </div>
-            </div>
-          </div>
-      </div>
-    </section>
-  );
-}
 
 // ─── Page assembly ────────────────────────────────────────────────────────────
 
@@ -1040,7 +976,6 @@ export default function HomePage() {
       <Testimonials />
       <TrustBar />
       <FAQ />
-      <CTABanner />
       <Footer />
     </main>
   );
