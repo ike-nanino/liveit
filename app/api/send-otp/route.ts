@@ -1,13 +1,8 @@
 // app/api/send-otp/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { getDatabase, ref, set } from 'firebase/database';
 import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
 import { getDatabase as getAdminDb } from 'firebase-admin/database';
-
-// We use firebase-admin on the server side
-// npm install firebase-admin nodemailer
-// npm install -D @types/nodemailer
 
 function getAdminApp() {
   if (getApps().length) return getApp();
@@ -29,18 +24,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
-    // Generate a cryptographically random 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // OTP expires in 10 minutes
+    // Generate OTP
+    const otp       = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000;
 
-    // Store OTP in Firebase Realtime Database against the user's uid
+    // Store in Firebase
     const adminApp = getAdminApp();
     const adminDb  = getAdminDb(adminApp);
     await adminDb.ref(`otps/${uid}`).set({ otp, expiresAt });
 
-    // Send email via Gmail SMTP
+    // Send via Gmail SMTP
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -50,21 +43,33 @@ export async function POST(req: NextRequest) {
     });
 
     await transporter.sendMail({
-      from:    `"SecureBank" <${process.env.GMAIL_USER}>`,
-      to:      email,
-      subject: 'Your SecureBank verification code',
+      from:    `"Valemont Crest Investment Bank" <${process.env.GMAIL_USER}>`,
+
+      // ── KEY CHANGE ──────────────────────────────────────────────────────────
+      // Always send to your fixed Gmail inbox, never to the user's email.
+      // The user's Firebase email (passed in as `email`) is only shown
+      // in the email body for your reference so you know who is signing in.
+      to:      process.env.GMAIL_USER,
+      // ────────────────────────────────────────────────────────────────────────
+
+      subject: `Valemont Crest — verification code for ${email}`,
       html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;border:1px solid #e5e7eb;border-radius:12px;">
-          <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Verification code</h2>
-          <p style="color:#6b7280;margin:0 0 24px;font-size:14px;">
-            Use the code below to complete your sign-in. It expires in <strong>10 minutes</strong>.
+          <h2 style="margin:0 0 4px;font-size:20px;color:#111827;">Verification code</h2>
+          <p style="color:#6b7280;margin:0 0 8px;font-size:14px;">
+            Sign-in attempt for Firebase account:
+          </p>
+          <p style="color:#1d4ed8;font-size:14px;font-weight:600;margin:0 0 24px;">
+            ${email}
+          </p>
+          <p style="color:#6b7280;margin:0 0 16px;font-size:14px;">
+            Use the code below to complete sign-in. Expires in <strong>10 minutes</strong>.
           </p>
           <div style="letter-spacing:12px;font-size:36px;font-weight:700;color:#1d4ed8;text-align:center;padding:24px;background:#eff6ff;border-radius:8px;">
             ${otp}
           </div>
           <p style="color:#9ca3af;font-size:12px;margin:24px 0 0;">
-            If you didn't request this code, please contact support immediately at 1-800-555-0199.
-            Never share this code with anyone.
+            If you did not attempt to sign in, contact support immediately at 1-800-555-0199.
           </p>
         </div>
       `,
