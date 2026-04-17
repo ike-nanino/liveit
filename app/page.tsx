@@ -270,9 +270,9 @@ function SocialProof() {
     { name: "Forbes",      src: "/images/press/forbes.png"      },
     { name: "TechCrunch",  src: "/images/press/techcrunch.png"  },
     { name: "Bloomberg",   src: "/images/press/bloomberg.png"   },
-    { name: "NerdWallet",  src: "/images/press/nerdwallet.png"  },
+    { name: "NerdWallet",  src: "/images/nw.png"  },
     { name: "Bankrate",    src: "/images/press/bankrate.png"    },
-    { name: "WSJ",         src: "/images/press/wsj.png"         },
+    { name: "WSJ",         src: "/images/wsj.png"         },
   ];
 
   return (
@@ -418,7 +418,7 @@ function AppShowcase() {
                 */}
                 <div className="relative w-72 h-140 sm:w-80 sm:h-155">
                   <Image
-                    src="/images/app-mockup.png"
+                    src="/images/mockup1.jpg"
                     alt="Hand holding an iPhone displaying the SecureBank mobile banking dashboard with account balances and recent transactions"
                     fill
                     className="object-contain drop-shadow-2xl"
@@ -606,7 +606,7 @@ function HumanSection() {
             <div className="space-y-3">
               <div className="relative h-64 rounded-2xl overflow-hidden">
                 <Image
-                  src="/images/team/team-1.jpg"
+                  src="/images/team-1.jpg"
                   alt="Confident professional woman smiling at her desk in a modern financial services office"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
@@ -614,7 +614,7 @@ function HumanSection() {
               </div>
               <div className="relative h-44 rounded-2xl overflow-hidden">
                 <Image
-                  src="/images/team/team-3.jpg"
+                  src="/images/team-3.jpg"
                   alt="Diverse team of financial advisors collaborating around a meeting table in a bright modern office"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
@@ -624,7 +624,7 @@ function HumanSection() {
             <div className="space-y-3 mt-8">
               <div className="relative h-44 rounded-2xl overflow-hidden">
                 <Image
-                  src="/images/team/team-2.jpg"
+                  src="/images/team-2.jpg"
                   alt="Professional man working on a laptop in a modern bright workspace with natural light"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
@@ -632,7 +632,7 @@ function HumanSection() {
               </div>
               <div className="relative h-64 rounded-2xl overflow-hidden">
                 <Image
-                  src="/images/team/team-4.jpg"
+                  src="/images/team-4.jpg"
                   alt="Friendly customer support specialist wearing a headset and smiling, ready to help banking customers"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
