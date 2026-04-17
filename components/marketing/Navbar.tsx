@@ -301,7 +301,7 @@ export default function Navbar() {
                     Sign in
                   </Link>
                   <Link
-                    href="/sign-in"
+                    href="/sign-up"
                     onClick={() => setMobileOpen(false)}
                     className="block w-full py-3 text-center text-sm font-semibold bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-colors"
                   >

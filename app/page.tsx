@@ -787,7 +787,7 @@ function Pricing() {
                   ))}
                 </ul>
                 <Link
-                  href="/sign-in"
+                  href="/sign-up"
                   className={`w-full py-3.5 text-center rounded-xl text-sm font-bold transition-all block ${
                     plan.highlight
                       ? "bg-blue-600 hover:bg-blue-500 text-white"
@@ -980,7 +980,7 @@ function CTABanner() {
                 fill
                 className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/92 via-blue-950/85 to-slate-900/92" />
+            
             </div>
 
             {/* Grid overlay */}
