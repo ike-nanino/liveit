@@ -268,10 +268,10 @@ function Hero() {
 function SocialProof() {
   const logos = [
     { name: "Forbes",      src: "/images/press/forbes.png"      },
-    { name: "TechCrunch",  src: "/images/press/techcrunch.png"  },
-    { name: "Bloomberg",   src: "/images/press/bloomberg.png"   },
+    { name: "TechCrunch",  src: "/images/br.png"  },
+    { name: "Bloomberg",   src: "/images/bloomberg.png"   },
     { name: "NerdWallet",  src: "/images/nw.png"  },
-    { name: "Bankrate",    src: "/images/press/bankrate.png"    },
+    { name: "Bankrate",    src: "/images/br.png"    },
     { name: "WSJ",         src: "/images/wsj.png"         },
   ];
 
@@ -290,7 +290,7 @@ function SocialProof() {
           - "Bankrate logo PNG transparent"
           - "Wall Street Journal WSJ logo PNG dark"
           Download the dark/grey versions so they look consistent on white.
-          Place them in /public/images/press/
+          Place them in /public/images/
         */}
         <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
           {logos.map((logo, i) => (
@@ -418,7 +418,7 @@ function AppShowcase() {
                 */}
                 <div className="relative w-72 h-140 sm:w-80 sm:h-155">
                   <Image
-                    src="/images/mockup1.jpg"
+                    src="/images/mockup1.png"
                     alt="Hand holding an iPhone displaying the SecureBank mobile banking dashboard with account balances and recent transactions"
                     fill
                     className="object-contain drop-shadow-2xl"
